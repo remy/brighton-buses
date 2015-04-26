@@ -11,7 +11,8 @@ function getNext(position) {
     success: function (data) {
       var html = '';
       data.times.forEach(function (time) {
-        html += '<li><strong>In ' + moment(time.time).fromNow(true) + '</strong> ' + time.layout.title + '</li>\n';
+        var m = moment(time.time);
+        html += '<li><strong>In ' + m.fromNow(true) + '</strong> at ' + m.format('HH:mm') + ' ' + time.layout.title + '</li>\n';
       });
       $('#times').html(html);
     },
