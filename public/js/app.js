@@ -1,8 +1,9 @@
 function getNext(position) {
+  console.log(position);
   $.ajax({
     url: '/nearest',
     data: {
-      service: '50,46,26',
+      service: services,
       lat: position.latitude,
       lng: position.longitude,
     },
@@ -18,9 +19,9 @@ function getNext(position) {
           console.log('dropped', time);
           return;
         }
-        html += '<li><span class="route">' + time.stop.route + '</span><div><strong>In ' + m.fromNow(true) + ' <small>at ' + m.format('HH:mm') + '</small></strong> <span class="description">' + time.stop.name + '</span></div></li>\n';
+        html += '<li><span class="route">' + time.stop.route + '</span><div><strong>In ' + m.fromNow(true) + ' <small>at ' + m.format('HH:mm') + '</small></strong> <p class="description">' + time.stop.name + '</p> <p class="destination">Going to ' + time.destination + '</p></div></li>\n';
       });
-      $('#times').html(html);
+      $('#times').html(html || '<li><p>No results were found&hellip;sorry!</p></li>');
     },
   })
 }
@@ -37,15 +38,26 @@ function success(position) {
 
 function error(err) {
   console.warn('ERROR(' + err.code + '): ' + err.message);
+  $('#times').html('<li>Location lookup timed out...not sure what to do now :-\\</li>');
 }
 
 if (!'geolocation' in navigator || !window.localStorage) {
   alert('needs geolocation');
 }
 
-var id = navigator.geolocation.watchPosition(success, error, {
-  enableHighAccuracy: true,
-  timeout: 5000,
-  // maximumAge: 0,
-});
-// getNext({})
+var services;
+
+if (!localStorage.services) {
+  window.location = '/config';
+} else {
+  if (localStorage.services && !services) {
+    services = localStorage.services;
+  }
+
+  var id = navigator.geolocation.watchPosition(success, error, {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0,
+  });
+}
+
