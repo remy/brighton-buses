@@ -19,9 +19,22 @@ function getNext(position) {
           console.log('dropped', time);
           return;
         }
-        html += '<li><span class="route">' + time.stop.route + '</span><div><strong>In ' + m.fromNow(true) + ' <small>at ' + m.format('HH:mm') + '</small></strong> <p class="description">' + time.stop.name + '</p> <p class="destination">Going to ' + time.destination + '</p></div></li>\n';
+        var actualTime = m.format('HH:mm');
+        var fromNow = m.fromNow(true);
+        html += '<li><span class="route">' + time.stop.route + '</span><div><strong data-time="' + time.time + '" data-fromnow="' + fromNow + '">In ' + fromNow + ' <small>at ' + actualTime + '</small></strong> <p class="description"><a target="_blank" href="https://www.google.co.uk/maps/?q=' + time.stop.lat + ',' + time.stop.lng + '">' + time.stop.name + '</a></p> <p class="destination">Going to ' + time.destination + '</p></div></li>\n';
       });
       $('#times').html(html || '<li><p>No results were found&hellip;sorry!</p></li>');
+
+      setInterval(function () {
+        $('strong[data-time]').each(function () {
+          var m = moment(this.dataset.time);
+          var fromNow = m.fromNow(true);
+          // only update if we have to
+          if (fromNow !== this.dataset.fromnow) {
+            this.innerHTML = 'In ' + fromNow + ' <small>at ' + m.format('HH:mm') + '</small>';
+          }
+        });
+      }, 15 * 1000);
     },
   })
 }
@@ -38,7 +51,7 @@ function success(position) {
 
 function error(err) {
   console.warn('ERROR(' + err.code + '): ' + err.message);
-  $('#times').html('<li>Location lookup timed out...not sure what to do now :-\\</li>');
+  $('#times').html('<li>Location lookup timed out&hellip;but I\'ll keep trying&hellip;</li>');
 }
 
 if (!'geolocation' in navigator || !window.localStorage) {
