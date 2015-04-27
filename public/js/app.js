@@ -10,26 +10,22 @@ function getNext(position) {
     dataType: 'json',
     success: function (data) {
       var html = '';
-      data.times.forEach(function (time) {
+      data.times.sort(function (a, b) {
+        return a.time < b.time ? -1 : 1;
+      }).forEach(function (time) {
         var m = moment(time.time);
-        html += '<li><strong>In ' + m.fromNow(true) + '</strong> at ' + m.format('HH:mm') + ' ' + time.layout.title + '</li>\n';
+        if (m.toDate().getTime() < Date.now()) {
+          console.log('dropped', time);
+          return;
+        }
+        html += '<li><span class="route">' + time.stop.route + '</span><div><strong>In ' + m.fromNow(true) + ' <small>at ' + m.format('HH:mm') + '</small></strong> <span class="description">' + time.stop.name + '</span></div></li>\n';
       });
       $('#times').html(html);
     },
   })
-  // var xhr = new XMLHttpRequest();
-  // xhr.onload = function () {
-  //   console.log(JSON.parse(this.response));
-  // };
-
-  // xhr.open('GET', '/nearest?services=50,26,46&lat=' + position.latitude + '&lng=' + position.longitude);
-  // xhr.setRequestHeader('Content-Type', 'application/json');
-
-  // xhr.send();
 }
 
 function success(position) {
-  console.log(position);
   navigator.geolocation.clearWatch(id);
   var res = {
     latitude: position.coords.latitude,
@@ -39,7 +35,7 @@ function success(position) {
   getNext(res);
 }
 
-function error(error) {
+function error(err) {
   console.warn('ERROR(' + err.code + '): ' + err.message);
 }
 
@@ -48,7 +44,8 @@ if (!'geolocation' in navigator || !window.localStorage) {
 }
 
 var id = navigator.geolocation.watchPosition(success, error, {
-  enableHighAccuracy: false,
+  enableHighAccuracy: true,
   timeout: 5000,
   // maximumAge: 0,
 });
+// getNext({})
