@@ -1,0 +1,10 @@
+<p>Select routes you want results from, then return to the <a href="/">bus&nbsp;finder</a></p>
+<form>
+<ul id="services">
+  {{#each services}}
+  <li><label class="label--checkbox"><input class="checkbox" type="checkbox" name="service" value="{{route}}">{{route}}</li>
+  {{/each}}
+</ul>
+</form>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/config.js"></script>
