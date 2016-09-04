@@ -28,6 +28,11 @@ function getNext(position) {
       setInterval(function () {
         $('strong[data-time]').each(function () {
           var m = moment(this.dataset.time);
+          if (m.toDate().getTime() < Date.now()) {
+            // drop this bus time
+            $(this).closest('li').remove();
+            return;
+          }
           var fromNow = m.fromNow(true);
           // only update if we have to
           if (fromNow !== this.dataset.fromnow) {
