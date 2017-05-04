@@ -20,6 +20,7 @@
     "express-hbs": "^0.8.4",
     "lodash": "^3.7.0",
     "moment": "^2.15.2",
+    "moment-timezone": "^0.5.13",
     "promise": "^7.0.1",
     "request": "^2.55.0"
   },
