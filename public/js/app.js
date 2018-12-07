@@ -19,9 +19,8 @@ function getNext(position) {
           console.log('dropped', time);
           return;
         }
-        var actualTime = m.format('HH:mm');
-        var fromNow = m.fromNow(true);
-        html += '<li><span class="route">' + time.stop.route + '</span><div><strong data-time="' + time.time + '" data-fromnow="' + fromNow + '">In ' + fromNow + ' <small>at ' + actualTime + '</small></strong> <p class="description"><a target="_blank" href="https://www.google.co.uk/maps/?q=' + time.stop.lat + ',' + time.stop.lng + '">' + time.stop.name + '</a></p> <p class="destination">Going to ' + time.destination + '</p></div></li>\n';
+        var actualTime = time.time.split('T').pop().split(':').slice(0, 2).join(':');
+        html += '<li><span class="route">' + time.stop.route + '</span><div><strong data-time="' + time.time + '" data-fromnow="' + time.due + '">In ' + time.due + 'm <small>at ' + actualTime + '</small></strong> <p class="description"><a target="_blank" href="https://www.google.co.uk/maps/?q=' + time.stop.lat + ',' + time.stop.lng + '">' + time.stop.name + '</a></p> <p class="destination">Going to ' + time.destination + '</p></div></li>\n';
       });
       $('#times').html(html || '<li><p>No results were found&hellip;sorry!</p></li>');
 
